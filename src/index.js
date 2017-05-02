@@ -5,6 +5,29 @@ import './index.css';
 import { Provider, connect } from 'react-redux'
 import { createStore, combineReducers } from 'redux'
 
+let nextTodoId = 0
+const addTodo = (text) => {
+  return {
+    type: 'ADD_TODO',
+    id: nextTodoId++,
+    text
+  }
+}
+
+const setVisibilityFilter= (filter) => {
+  return {
+    type: 'SET_VISIBILITY_FILTER',
+    filter
+  }
+}
+
+const toggleTodo = (id) => {
+  return {
+    type: 'TOGGLE_TODO',
+    id
+  }
+}
+
 const Link = ({active, children, onClick}) => {
   if(active){
     return <span>{children}</span> 
@@ -22,10 +45,7 @@ const Link = ({active, children, onClick}) => {
 const mapDispatchToLinkProps = (dispatch, ownProps) => {
   return {
     onClick: () => {
-      dispatch({
-          type: 'SET_VISIBILITY_FILTER',
-          filter: ownProps.filter
-        })
+      dispatch(setVisibilityFilter(ownProps.filter))
     }
   }
 }
@@ -100,18 +120,15 @@ const visibilityFilter = (state = 'SHOW_ALL',action) => {
 }*/ 
 
 const todoApp = combineReducers({ todos, visibilityFilter})
-let nextTodoId = 0
-const AddTodo = ({ dispatch }) => {
+
+
+let AddTodo = ({ dispatch }) => {
   let input;
   return (
     <div>
       <input ref={node => {input = node}}/>
       <button onClick={() => {
-          dispatch({
-            type: 'ADD_TODO',
-            id: nextTodoId++,
-            text: input.value
-          })
+          dispatch(addTodo(input.value))
           input.value=''
       }}
       >
@@ -153,7 +170,7 @@ const mapStateToTodoListProps = (state) => {
 
 const mapDispatchToTodoListProps = (dispatch) => {
   return {
-    onTodoClick: (id) => {dispatch({type: 'TOGGLE_TODO', id})}
+    onTodoClick: (id) => {dispatch(toggleTodo(id))}
   }
 }
 
