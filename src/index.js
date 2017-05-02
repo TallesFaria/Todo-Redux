@@ -1,52 +1,80 @@
-import React from 'react';
+import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 //import App from './App';
 import './index.css';
 
 import { createStore, combineReducers } from 'redux'
 
-const Footer = ({visibilityFilter, onFilterClick}) => (
+const Footer = () => (
   <p>
     Show: {' '}  
-    <FilterLink filter='SHOW_ALL' currentFilter={visibilityFilter} onClick={onFilterClick}> All </FilterLink> 
-    <FilterLink filter='SHOW_ACTIVE' currentFilter={visibilityFilter} onClick={onFilterClick}> Active </FilterLink>
-    <FilterLink filter='SHOW_COMPLETED' currentFilter={visibilityFilter} onClick={onFilterClick}> Completed </FilterLink>
+    <FilterLink filter='SHOW_ALL'> All</FilterLink> {', '}
+    <FilterLink filter='SHOW_ACTIVE'> Active</FilterLink> {', '}
+    <FilterLink filter='SHOW_COMPLETED'> Completed </FilterLink>
   </p>
 )
 
-const FilterLink = ({filter, currentFilter, children, onClick}) => {
-  if(filter === currentFilter){
+const Link = ({active, children, onClick}) => {
+  if(active){
     return <span>{children}</span> 
   }
   return (
     <a href='#' onClick={e => {
       e.preventDefault() 
-      onClick(filter)
+      onClick()
     }}>
       {children} 
     </a> 
   )
 }
 
+class FilterLink extends Component {
+  componentDidMount() {
+    this.unsubscribed = store.subscribe(() => this.forceUpdate())
+  }
+
+  componentWillUnMount() {
+    this.unsubscribed()
+  }
+  
+  
+  render(){
+    const props = this.props
+    const state = store.getState()
+
+    return (      
+      <Link
+        active={props.filter === state.visibilityFilter}
+        onClick={() => store.dispatch({
+          type: 'SET_VISIBILITY_FILTER',
+          filter: props.filter
+        })}
+      >
+        {props.children}
+      </Link>  
+    )
+  }
+}
+
 const todo = (state, action) => {
-    switch (action.type) {
-        case 'ADD_TODO':
-            return {
-                id: action.id,
-                text: action.text,
-                completed: false
-            }   
-        case 'TOGGLE_TODO':
-            if(state.id !== action.id) {
-                return state
-            }
-            return {
-                ...state, 
-                completed: !state.completed
-            }       
-        default:
-            return state
-    }
+  switch (action.type) {
+      case 'ADD_TODO':
+          return {
+              id: action.id,
+              text: action.text,
+              completed: false
+          }   
+      case 'TOGGLE_TODO':
+          if(state.id !== action.id) {
+              return state
+          }
+          return {
+              ...state, 
+              completed: !state.completed
+          }       
+      default:
+          return state
+  }
 }
 
 
@@ -144,15 +172,7 @@ const TodoApp = ({ todos, visibilityFilter}) => (
           }
         } 
       />
-      <Footer 
-        visibilityFilter={visibilityFilter}
-        onFilterClick={ filter => 
-          store.dispatch({
-            type: 'SET_VISIBILITY_FILTER',
-            filter
-          })
-        }
-      />
+      <Footer />
   </div>
 )
 
