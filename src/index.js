@@ -118,7 +118,7 @@ const visibilityFilter = (state = 'SHOW_ALL',action) => {
 
 const todoApp = combineReducers({ todos, visibilityFilter})
 
-const AddTodo = (props, { store }) => {
+const AddTodo = ({ dispatch }) => {
   let input;
   return (
     <div>
@@ -137,9 +137,7 @@ const AddTodo = (props, { store }) => {
     </div>
   )
 }
-AddTodo.contextTypes = {
-  store: React.PropTypes.object
-}
+AddTodo = connect()(AddTodo)
 
 const getVisibleTodos = (todos, filter) => {
   switch (filter) {
@@ -164,19 +162,20 @@ const TodoList = ({todos, onTodoClick}) => (
   </ul>
 )
 
-const mapStateToProps = (state) => {
+const mapStateToTodoListProps = (state) => {
   return {
     todos: getVisibleTodos(state.todos, state.visibilityFilter) 
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToTodoListProps = (dispatch) => {
   return {
     onTodoClick: (id) => {dispatch({type: 'TOGGLE_TODO', id})}
   }
 }
 
 const VisibleTodoList = connect(mapStateToProps, mapDispatchToProps)(TodoList)
+
 let nextTodoId = 0
 const TodoApp = () => (
   <div>
