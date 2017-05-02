@@ -10,12 +10,12 @@ const todo = (state, action) => {
                 completed: false
             }   
         case 'TOGGLE_TODO':
-            if(todo.id !== action.id) {
-                return todo
+            if(state.id !== action.id) {
+                return state
             }
             return {
-                ...todo, 
-                completed: !todo.completed
+                ...state, 
+                completed: !state.completed
             }       
         default:
             return state
