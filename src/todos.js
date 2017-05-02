@@ -1,4 +1,5 @@
-import { createStore } from 'redux'
+import { createStore, combineReducers } from 'redux'
+import React, { Component } from 'react'
 
 const todo = (state, action) => {
     switch (action.type) {
@@ -46,10 +47,49 @@ const visibilityFilter = (state = 'SHOW_ALL',action) => {
     }
 }
 
-const todoApp = (state = [], action) => {
-    return {
-        todos: todos(state.todos, action),
-        visibilityFilter: visibilityFilter(state.visibilityFilter, action)
+/* const combineReducers = (reducers) => {
+    return (state = {}, action) => {
+        return Object.keys(reducers).reduce(nextState, key) => {
+            nextState[Key] = reducers[key](state[key], action)
+            return nextState
+        },
+        {}
+    )
+}*/ 
+
+const todoApp = combineReducers({ todos, visibilityFilter})
+
+const store = createStore(todoApp)
+
+let nextTodoId = 0
+class TodoApp extends Component {
+    render(){
+        return (
+            <div>
+                <input ref={node => {this.input = node}}/>
+                <button onClick={() => {
+                    store.dispatch({
+                        type: 'ADD_TODO',
+                        text: this.input.value,
+                        id: nextTodoId++
+                    })
+                    this.input.value=''
+                }}
+                >
+                    AddTodo
+                </button>
+                <ul>
+                    {this.props.todos.map(todo => <li key={todo.id}> {todo.text} </li>)}
+                </ul>
+            </div>
+        )
     }
 }
-const store = createStore(todoApp)
+
+
+// const render = () => {
+//     ReactDOM.render(<TodoApp />, document.getElementById('root'))
+// }
+
+// store.subscribe(render)
+// render()
