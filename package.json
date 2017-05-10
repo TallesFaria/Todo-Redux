@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "babel-plugin-transform-object-rest-spread": "^6.23.0",
     "lodash": "^4.17.4",
     "node-uuid": "^1.4.8",
     "react": "^15.5.4",
