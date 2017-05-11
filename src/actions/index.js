@@ -44,10 +44,13 @@ export const setVisibilityFilter= (filter) => ({
   filter
 })
 
-export const toggleTodo = (id) => ({
-  type: 'TOGGLE_TODO',
-  id
-})
+export const toggleTodo = (id) => (dispatch) => 
+  api.toggleTodo(id).then(response => {
+    dispatch({
+      type: 'TOGGLE_TODO_SUCESS',
+      response: normalize(response, schema.todo)
+    })
+  })
 
 
   
