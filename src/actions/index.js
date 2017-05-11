@@ -39,11 +39,6 @@ export const addTodo = (text) => (dispatch) =>
     })
   })
 
-export const setVisibilityFilter= (filter) => ({
-  type: 'SET_VISIBILITY_FILTER',
-  filter
-})
-
 export const toggleTodo = (id) => (dispatch) => 
   api.toggleTodo(id).then(response => {
     dispatch({

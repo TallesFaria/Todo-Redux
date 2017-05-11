@@ -1,6 +1,6 @@
 import { createStore, applyMiddleware } from 'redux'
 import createLogger from 'redux-logger'
-import todoApp from './reducers'
+import todos from './reducers'
 import thunk from 'redux-thunk'
 
 const configureStore = () => {
@@ -10,7 +10,7 @@ const configureStore = () => {
     }
 
     return createStore(
-        todoApp,
+        todos,
         applyMiddleware(...middlewares)
     )
 }
